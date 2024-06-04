@@ -1,0 +1,43 @@
+Service:
+  RegionId: cn-hangzhou
+  DeployType: ros
+  DeployMetadata:
+    SupplierDeployMetadata:
+      RoleName: ComputeNestDeploy
+      UserType: Aliyun
+      SupplierTemplateConfigs:
+        - Name: Template
+          Url: 'ros_templates/template.yaml'
+          PredefinedParameters: []
+          HiddenParameterKeys:
+            - VpcId
+            - VSwitchId
+            - ZoneId
+          ParameterMappings:
+            - ParameterKey: RegionId
+              ParameterMappingKeys:
+                - VpcId
+                - ZoneId
+                - VSwitchId
+              ParameterValueMapping:
+                cn-hangzhou:
+                  Parameters:
+                    VpcId: vpc-bp13gvcs4sb17xh27qxcu
+                    ZoneId: cn-hangzhou-j
+                    VSwitchId: vsw-bp123chgit0937hsxvx44
+      FileArtifactRelation:
+        '{{ computenest::file::myapp }}':
+          ArtifactId: ${Artifact.Artifact_1.ArtifactId}
+          ArtifactVersion: ${Artifact.Artifact_1.ArtifactVersion}
+  ServiceType: managed
+  ServiceInfo:
+    Locale: zh-CN
+    ShortDescription: demo
+    Image: 'resources/icons/service_logo.png'
+Artifact:
+  Artifact_1:
+    ArtifactType: File
+    ArtifactName: myapp
+    ArtifactProperty:
+      RegionId: cn-hangzhou
+      Url: 'resources/artifact_resources/file/package.tgz'
