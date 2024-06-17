@@ -11,7 +11,6 @@ Service:
       - Name: 单机版
         Url: 'ros_templates/template.yaml'
         AllowedRegions:
-          - cn-qingdao
           - cn-beijing
           - cn-hangzhou
   ServiceType: private
@@ -25,4 +24,4 @@ Artifact:
     ArtifactName: myapp
     ArtifactProperty:
       RegionId: cn-hangzhou
-      Url: 'resources/artifact_resources/file/myapp.tar.gz'
+      Url: 'resources/artifact_resources/file/package.tgz'
