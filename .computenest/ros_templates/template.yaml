@@ -112,8 +112,7 @@ Resources:
     Properties:
       SecurityGroupName:
         Ref: ALIYUN::StackName
-      VpcId:
-        Ref: VpcId
+      VpcId: vpc-bp11a4xr7tjtzbiwj1roj
       SecurityGroupIngress:
         - PortRange: 8080/8080
           Priority: 1
@@ -130,12 +129,9 @@ Resources:
         Ref: PayPeriodUnit
       Period:
         Ref: PayPeriod
-      VpcId:
-        Ref: VpcId
-      VSwitchId:
-        Ref: VSwitchId
-      ZoneId:
-        Ref: ZoneId
+      VpcId: vpc-bp11a4xr7tjtzbiwj1roj
+      VSwitchId: vsw-bp1d09optuy6xy4efswzn
+      ZoneId: cn-hangzhou-i
       SecurityGroupId:
         Ref: SecurityGroup
       ImageId: centos_7_9_x64_20G_alibase_20240531.vhd
