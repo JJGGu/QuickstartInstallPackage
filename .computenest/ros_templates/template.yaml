@@ -1,7 +1,7 @@
 ROSTemplateFormatVersion: '2015-09-01'
 Description:
-  en: Install Package Service Ros Template
-  zh-cn: 安装包服务模板
+  en: Source Code Service Ros Template
+  zh-cn: 源代码服务模板
 Parameters:
   PayType:
     Type: String
@@ -64,6 +64,10 @@ Parameters:
     AssociationProperty: ALIYUN::ECS::Instance::InstanceType
     AssociationPropertyMetadata:
       InstanceChargeType: ${PayType}
+      Constraints:
+        InstanceTypeFamily:
+          - ecs.u1
+          - ecs.e
   InstancePassword:
     NoEcho: true
     Type: String
@@ -91,22 +95,12 @@ Parameters:
     Label:
       en: VPC ID
       zh-cn: 专有网络VPC实例ID
-    Description:
-      en: >-
-        Please search the ID starting with (vpc-xxx) from console-Virtual
-        Private Cloud
-      zh-cn: 现有虚拟专有网络的实例ID
     AssociationProperty: 'ALIYUN::ECS::VPC::VPCId'
   VSwitchId:
     Type: String
     Label:
       en: VSwitch ID
       zh-cn: 交换机实例ID
-    Description:
-      en: >-
-        Instance ID of existing business network switches, console-Virtual
-        Private Cloud-VSwitches under query
-      zh-cn: 现有业务网络交换机的实例ID
     Default: ''
     AssociationProperty: 'ALIYUN::ECS::VSwitch::VSwitchId'
     AssociationPropertyMetadata:
@@ -118,9 +112,10 @@ Resources:
     Properties:
       SecurityGroupName:
         Ref: ALIYUN::StackName
-      VpcId: vpc-bp11a4xr7tjtzbiwj1roj
+      VpcId:
+        Ref: VpcId
       SecurityGroupIngress:
-        - PortRange: 8080/8080
+        - PortRange: 80/80
           Priority: 1
           SourceCidrIp: 0.0.0.0/0
           IpProtocol: tcp
@@ -135,12 +130,15 @@ Resources:
         Ref: PayPeriodUnit
       Period:
         Ref: PayPeriod
-      VpcId: vpc-bp11a4xr7tjtzbiwj1roj
-      VSwitchId: vsw-bp1d09optuy6xy4efswzn
-      ZoneId: cn-hangzhou-i
+      VpcId:
+        Ref: VpcId
+      VSwitchId:
+        Ref: VSwitchId
+      ZoneId:
+        Ref: ZoneId
       SecurityGroupId:
         Ref: SecurityGroup
-      ImageId: centos_7_9_x64_20G_alibase_20240403.vhd
+      ImageId: centos_8_5_x64_20G_alibase_20220428.vhd
       Password:
         Ref: InstancePassword
       InstanceType:
@@ -163,15 +161,18 @@ Resources:
       CommandContent:
         Fn::Sub:
           - |
-            #!/bin/sh
-            wget '{{ computenest::file::myapp }}'
-            # RunCommand为用户指定的运行命令
+            #!/bin/bash
+            # 源代码通过computenest-cli被打包为tar.gz包，并发布为部署物
+            wget '{{ computenest::file::myapp }}' -O myapp.tar.gz
+            tar -zxvf myapp.tar.gz && cd "$(tar -tzf myapp.tar.gz | head -1 | awk -F'/' '{print $1}')"
+            # 下面为用户指定的运行命令
+            echo "start run command"
             yum install -y java
             mkdir -p /home/admin/application
+            cp package.tgz /home/admin/application
             cd /home/admin/application
             tar xvf package.tgz
-            cp package.tgz /home/admin/application
-            /bin/bash deploy.sh start
+            bin/bash deploy.sh start
 
             ARGUS_VERSION=3.5.7 /bin/bash -c "$(curl -sS https://cms-agent-${RegionId}.oss-${RegionId}-internal.aliyuncs.com/Argus/agent_install_ecs-1.7.sh)" >> /root/install_cms_agent.log 2>&1
           - RegionId:
@@ -183,7 +184,7 @@ Outputs:
       zh-cn: 访问页面。
     Value:
       Fn::Sub:
-        - 'http://${ServerAddress}:8080'
+        - 'http://${ServerAddress}:80'
         - ServerAddress:
             Fn::Select:
             - 0
