@@ -138,7 +138,7 @@ Resources:
         Ref: ZoneId
       SecurityGroupId:
         Ref: SecurityGroup
-      ImageId: centos_7_9_x64_20G_alibase_20240403.vhd
+      ImageId: centos_7_9_x64_20G_alibase_20240531.vhd
       Password:
         Ref: InstancePassword
       InstanceType:
@@ -171,13 +171,12 @@ Resources:
               wget '{{ computenest::file::myapp }}'
             fi
             # 下面为用户指定的运行命令
-            echo "start run command"
             yum install -y java
             mkdir -p /home/admin/application
             cp package.tgz /home/admin/application
             cd /home/admin/application
             tar xvf package.tgz
-            bin/bash deploy.sh start
+            /bin/bash deploy.sh start
 
             ARGUS_VERSION=3.5.7 /bin/bash -c "$(curl -sS https://cms-agent-${RegionId}.oss-${RegionId}-internal.aliyuncs.com/Argus/agent_install_ecs-1.7.sh)" >> /root/install_cms_agent.log 2>&1
           - RegionId:
