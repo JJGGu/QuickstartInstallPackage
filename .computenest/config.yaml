@@ -4,7 +4,7 @@ Service:
   DeployMetadata:
     SupplierDeployMetadata:
       FileArtifactRelation:
-        '{{ computenest::file::myapp }}':
+        '{{ computenest::file::JJGGu_QuickstartInstallPackage }}':
           ArtifactId: ${Artifact.Artifact_1.ArtifactId}
           ArtifactVersion: ${Artifact.Artifact_1.ArtifactVersion}
     TemplateConfigs:
@@ -12,6 +12,8 @@ Service:
         Url: 'ros_templates/template.yaml'
         AllowedRegions:
           - cn-hangzhou
+          - cn-shanghai
+          - cn-beijing
   ServiceType: private
   ServiceInfo:
     Locale: zh-CN
@@ -20,7 +22,7 @@ Service:
 Artifact:
   Artifact_1:
     ArtifactType: File
-    ArtifactName: myapp
+    ArtifactName: JJGGu_QuickstartInstallPackage
     ArtifactProperty:
       RegionId: cn-hangzhou
-      Url: 'resources/artifact_resources/file/package.tgz'
+      Url: 'resources/artifact_resources/file/JJGGu_QuickstartInstallPackage.tar.gz'

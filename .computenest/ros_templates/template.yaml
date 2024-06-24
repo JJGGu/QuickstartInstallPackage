@@ -1,7 +1,7 @@
 ROSTemplateFormatVersion: '2015-09-01'
 Description:
-  en: Install Package Service Ros Template
-  zh-cn: 安装包服务模板
+  en: Source Code Service Ros Template
+  zh-cn: 源代码服务模板
 Parameters:
   PayType:
     Type: String
@@ -161,22 +161,11 @@ Resources:
       CommandContent:
         Fn::Sub:
           - |
-            #!/bin/sh
-            url='{{ computenest::file::myapp }}'
-            if [[ "$url" == *Expires* ]]; then
-              filename=$(echo "$url" | awk -F'[/?]' '{print $(NF-1)}')
-              wget '{{ computenest::file::myapp }}' -O $filename
-              echo "Extracted filename: $filename"
-            else
-              wget '{{ computenest::file::myapp }}'
-            fi
-            # 下面为用户指定的运行命令
-            yum install -y java
-            mkdir -p /home/admin/application
-            cp package.tgz /home/admin/application
-            cd /home/admin/application
-            tar xvf package.tgz
-            /bin/bash deploy.sh start
+            #!/bin/bash
+            # 源代码通过computenest-cli被打包为tar.gz包，并发布为部署物
+            wget '{{ computenest::file::JJGGu_QuickstartInstallPackage }}' -O JJGGu_QuickstartInstallPackage.tar.gz
+            tar -zxvf JJGGu_QuickstartInstallPackage.tar.gz && cd "$(tar -tzf JJGGu_QuickstartInstallPackage.tar.gz | head -1 | awk -F'/' '{print $1}')"
+            bash install.sh
 
             ARGUS_VERSION=3.5.7 /bin/bash -c "$(curl -sS https://cms-agent-${RegionId}.oss-${RegionId}-internal.aliyuncs.com/Argus/agent_install_ecs-1.7.sh)" >> /root/install_cms_agent.log 2>&1
           - RegionId:
@@ -215,3 +204,4 @@ Metadata:
           - VSwitchId
         Label:
           default: 可用区配置
+      
