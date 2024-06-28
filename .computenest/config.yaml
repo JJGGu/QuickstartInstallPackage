@@ -25,4 +25,4 @@ Artifact:
     ArtifactName: JJGGu_QuickstartInstallPackage
     ArtifactProperty:
       RegionId: cn-hangzhou
-      Url: 'resources/artifact_resources/file/JJGGu_QuickstartInstallPackage.tar.gz'
+      Url: 'resources/artifact_resources/file/package.tgz'
